@@ -22,7 +22,6 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  */
 @NonNullByDefault
 public class DeyeInverterConfiguration {
-
     public int pollInterval;
     public int maxTries;
 }
