@@ -219,6 +219,10 @@ public class DeyeInverterHandler extends BaseModbusThingHandler {
         }
     }
 
+    /**
+     * Reads static data from the inverter, which is required for correct operation of the handler, e.g. 
+     * to determine the model type, but also for informational purposes. The data is stored as thing properties.
+     */
     private Map<String, String> readStaticData() {
         logger.debug("Lese statische Daten");
         Map<String, String> properties = new java.util.concurrent.ConcurrentHashMap<>();
@@ -226,83 +230,79 @@ public class DeyeInverterHandler extends BaseModbusThingHandler {
             // Initial poll of static info
             // a) manufacturer, model, serial number
             submitOneTimePoll(new ModbusReadRequestBlueprint(getSlaveId(),
-                    ModbusReadFunctionCode.READ_MULTIPLE_REGISTERS, 0, 8, 3), (AsyncModbusReadResult result) -> {
-                        logger.debug("Initial poll successful {}", result);
-                        byte[] res = result.getRegisters().get().getBytes();
-                        int modelInfo = 0;
-                        ModbusBitUtilities.extractStateFromRegisters(result.getRegisters().get(), 0,
-                                ModbusConstants.ValueType.UINT16).ifPresent(v -> {
-                                    switch (v.intValue()) {
-                                        case 2:
-                                            properties.put(PROPERTY_MODEL_TYPE, "P1");
-                                            break;
-                                        case 3:
-                                            properties.put(PROPERTY_MODEL_TYPE, "LP1");
-                                            break;
-                                        case 4:
-                                            properties.put(PROPERTY_MODEL_TYPE, "G4");
-                                            break;
-                                        case 5:
-                                            properties.put(PROPERTY_MODEL_TYPE, "LP3");
-                                            break;
-                                        case 6:
-                                            properties.put(PROPERTY_MODEL_TYPE, "HP3");
-                                            break;
-
-                                    }
-                                    properties.put(PROPERTY_MODEL_TYPE, String.valueOf(modelInfo));
-                                    logger.debug("Inverter Type: {} ", v.intValue());
-                                });
-
+                ModbusReadFunctionCode.READ_MULTIPLE_REGISTERS, 0, 8, 3), (AsyncModbusReadResult result) -> {
+                    logger.debug("Initial poll successful {}", result);
+                    byte[] res = result.getRegisters().get().getBytes();
+                    int modelInfo = 0;
+                    ModbusBitUtilities.extractStateFromRegisters(result.getRegisters().get(), 0,
+                        ModbusConstants.ValueType.UINT16).ifPresent(v -> {
+                            switch (v.intValue()) {
+                                case 2:
+                                    properties.put(PROPERTY_MODEL_TYPE, "P1");
+                                    break;
+                                case 3:
+                                    properties.put(PROPERTY_MODEL_TYPE, "LP1");
+                                    break;
+                                case 4:
+                                    properties.put(PROPERTY_MODEL_TYPE, "G4");
+                                    break;
+                                case 5:
+                                    properties.put(PROPERTY_MODEL_TYPE, "LP3");
+                                    break;
+                                case 6:
+                                    properties.put(PROPERTY_MODEL_TYPE, "HP3");
+                                    break;
+                            }
+                            properties.put(PROPERTY_MODEL_TYPE, String.valueOf(modelInfo));
+                            logger.debug("Inverter Type: {} ", v.intValue());
+                        });
                         String serialNo = new String(res, 3, 13).trim();
                         if (!serialNo.isEmpty()) {
                             properties.put(PROPERTY_SERIAL_NO, serialNo);
                         }
                         // String manufacturerId = new String(res, 32, 16).trim();
-
                         logger.debug("Inverter S/N: {} ", serialNo);
+                        }, (AsyncModbusFailure<ModbusReadRequestBlueprint> error) -> {
+                            logger.warn("Initial read of model information failed", error.getCause());
+                        });
 
-                    }, (AsyncModbusFailure<ModbusReadRequestBlueprint> error) -> {
-                        logger.warn("Initial read of model information failed", error.getCause());
-                    });
-
-            Thread.sleep(100);
-            // // b) firmware versions
-            // submitOneTimePoll(new ModbusReadRequestBlueprint(getSlaveId(),
-            // ModbusReadFunctionCode.READ_MULTIPLE_REGISTERS, 36001, 3, 3), (AsyncModbusReadResult result) -> {
-            // byte[] res = result.getRegisters().get().getBytes();
-            // properties.put(PROPERTY_FIRMWARE_WR, String.format("%d.%03d", res[0], res[1]));
-            // // TODO The mapping for PROPERTY_FIRMWARE_PV is not confirmed, PV FW could also be stored in
-            // // res[4,5]
-            // properties.put(PROPERTY_FIRMWARE_PV, String.format("%d.%03d", res[2], res[3]));
-            // }, (AsyncModbusFailure<ModbusReadRequestBlueprint> error) -> {
-            // // reading properties is not critical, just log at debug level
-            // logger.debug("Reading firmware WR/PV failed", error.getCause());
-            // });
-            // Thread.sleep(100);
-            // // c) firmware versions
-            // submitOneTimePoll(new ModbusReadRequestBlueprint(getSlaveId(),
-            // ModbusReadFunctionCode.READ_MULTIPLE_REGISTERS, 37003, 1, 3), (AsyncModbusReadResult result) -> {
-            // byte[] res = result.getRegisters().get().getBytes();
-            // properties.put(PROPERTY_FIRMWARE_BMS, String.format("%d.%03d", res[0], res[1]));
-            // }, (AsyncModbusFailure<ModbusReadRequestBlueprint> error) -> {
-            // // reading properties is not critical, just log at debug level
-            // logger.debug("Reading firmware BMS failed", error.getCause());
-            // });
-            // Thread.sleep(100);
-            // d) rated power, max active power
-            submitOneTimePoll(new ModbusReadRequestBlueprint(getSlaveId(),
-                    ModbusReadFunctionCode.READ_MULTIPLE_REGISTERS, 8, 2 * 2, 3), (AsyncModbusReadResult result) -> {
-                        ModbusBitUtilities.extractStateFromRegisters(result.getRegisters().get(), 0,
-                                ModbusConstants.ValueType.UINT32).ifPresent(v -> {
-                                    properties.put(PROPERTY_RATED_POWER, Objects.toString(v.toBigDecimal()) + " W");
-                                });
-                        // ModbusBitUtilities.extractStateFromRegisters(result.getRegisters().get(), 2,
-                        // ModbusConstants.ValueType.UINT32).ifPresent(v -> {
-                        // properties.put(PROPERTY_MAX_ACTIVE_POWER,
-                        // Objects.toString(v.toBigDecimal()) + " W");
+                        Thread.sleep(100);
+                        // // b) firmware versions
+                        // submitOneTimePoll(new ModbusReadRequestBlueprint(getSlaveId(),
+                        // ModbusReadFunctionCode.READ_MULTIPLE_REGISTERS, 36001, 3, 3), (AsyncModbusReadResult result) -> {
+                        // byte[] res = result.getRegisters().get().getBytes();
+                        // properties.put(PROPERTY_FIRMWARE_WR, String.format("%d.%03d", res[0], res[1]));
+                        // // TODO The mapping for PROPERTY_FIRMWARE_PV is not confirmed, PV FW could also be stored in
+                        // // res[4,5]
+                        // properties.put(PROPERTY_FIRMWARE_PV, String.format("%d.%03d", res[2], res[3]));
+                        // }, (AsyncModbusFailure<ModbusReadRequestBlueprint> error) -> {
+                        // // reading properties is not critical, just log at debug level
+                        // logger.debug("Reading firmware WR/PV failed", error.getCause());
                         // });
-                    }, (AsyncModbusFailure<ModbusReadRequestBlueprint> error) -> {
+                        // Thread.sleep(100);
+                        // // c) firmware versions
+                        // submitOneTimePoll(new ModbusReadRequestBlueprint(getSlaveId(),
+                        // ModbusReadFunctionCode.READ_MULTIPLE_REGISTERS, 37003, 1, 3), (AsyncModbusReadResult result) -> {
+                        // byte[] res = result.getRegisters().get().getBytes();
+                        // properties.put(PROPERTY_FIRMWARE_BMS, String.format("%d.%03d", res[0], res[1]));
+                        // }, (AsyncModbusFailure<ModbusReadRequestBlueprint> error) -> {
+                        // // reading properties is not critical, just log at debug level
+                        // logger.debug("Reading firmware BMS failed", error.getCause());
+                        // });
+                        // Thread.sleep(100);
+                        // d) rated power, max active power
+                        submitOneTimePoll(new ModbusReadRequestBlueprint(getSlaveId(),
+                            ModbusReadFunctionCode.READ_MULTIPLE_REGISTERS, 8, 2 * 2, 3), (AsyncModbusReadResult result) -> {
+                                ModbusBitUtilities.extractStateFromRegisters(result.getRegisters().get(), 0,
+                                    ModbusConstants.ValueType.UINT32).ifPresent(v -> {
+                                        properties.put(PROPERTY_RATED_POWER, Objects.toString(v.toBigDecimal()) + " W");
+                                    });
+                            // ModbusBitUtilities.extractStateFromRegisters(result.getRegisters().get(), 2,
+                            // ModbusConstants.ValueType.UINT32).ifPresent(v -> {
+                            // properties.put(PROPERTY_MAX_ACTIVE_POWER,
+                            // Objects.toString(v.toBigDecimal()) + " W");
+                            // });
+                        }, (AsyncModbusFailure<ModbusReadRequestBlueprint> error) -> {
                         // reading properties is not critical, just log at debug level
                         logger.debug("Reading rated/max ac tive power failed", error.getCause());
                     });
@@ -315,6 +315,13 @@ public class DeyeInverterHandler extends BaseModbusThingHandler {
         return properties;
     }
 
+    /**
+     * //TODO this not ist not working fpr Deye inverters, as the alarm state is not only determined by the 3 alarm registers, 
+     * but also by a fault bit in the status register. This should be refactored to evaluate all relevant channels together and update the alarm channel accordingly.
+     * 
+     * Processes the alarm state based on the 3 alarm registers and the fault bit in the status register.
+     * If there is a change in the overall alarm state, the channel "status-alarm" is updated and a log entry is created.
+     */
     private void processAlarmState() {
         boolean currentAlarmState = (alarm[0] != 0) || (alarm[1] != 0) || (alarm[2] != 0) || statusFault;
         if (currentAlarmState != alarmState) {
@@ -336,6 +343,11 @@ public class DeyeInverterHandler extends BaseModbusThingHandler {
         updateState(new ChannelUID(thing.getUID(), "di-overview", "di-" + CHANNEL_STATUS_ALARM), state);
     }
 
+
+    /**
+     * Processes updates on hidden channels, which are not directly exposed, 
+     * but used to update other channels, e.g. by evaluating bit fields or suppressing certain values.
+     */
     private void processHiddenChannel(DeyeInverterRegisters channel, org.openhab.core.types.State v) {
         // this block deals with channels which are not directly exposed, but
         // used to update other channels
@@ -411,9 +423,11 @@ public class DeyeInverterHandler extends BaseModbusThingHandler {
 
     /**
      * 
+     * 
+     * 
      * @param request
      * @param result
-     */
+     */ 
     private void readSuccessful(ModbusRequest request, AsyncModbusReadResult result) {
         logger.trace("readSuccessful {}: {}", request, result);
         result.getRegisters().ifPresent(registers -> {

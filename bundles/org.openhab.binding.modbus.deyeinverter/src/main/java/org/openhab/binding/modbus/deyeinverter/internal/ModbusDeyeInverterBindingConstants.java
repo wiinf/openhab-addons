@@ -21,6 +21,7 @@ import org.openhab.core.thing.ThingTypeUID;
  * used across the whole binding.
  *
  * @author Holger Friedrich - Initial contribution
+ * @author Alexander Teterra - carry over from FoxESS Binding
  */
 @NonNullByDefault
 public class ModbusDeyeInverterBindingConstants {

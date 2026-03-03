@@ -51,44 +51,44 @@ The `deye-inverter` Thing has channels that serve the current state of the FoxES
 
 | Channel Type ID                    | Item Type                | Description                           | Advanced  | Channel Group       |
 |------------------------------------|--------------------------|---------------------------------------|-----------|---------------------|
-| fi-inverter-power                  | Number:Power             | Inverter Active Power                 | no        | Overview            |
-| fi-home-import-power               | Number:Power             | Power flow with home network          | no        | Overview            |
-| fi-daily-pv-generation             | Number:Energy            | Daily PV Generation                   | no        | Overview            |
-| fi-total-pv-generation             | Number:Energy            | Total PV Generation                   | no        | Overview            |
-| fi-internal-temperature            | Number:Temperature       | Internal Temperature                  | yes       | Overview            |
-| fi-meter-connected                 | Contact                  | Smart Meter is Connected              | yes       | Overview            |
-| fi-status-alarm                    | Contact                  | System Warning                        | no        | Overview            |
-| fi-status-operation                | Contact                  | System in Operational Mode            | no        | Overview            |
-| fi-status-standby                  | Contact                  | System in Standby Mode (not yet off)  | yes       | Overview            |
-| fi-pv-power                        | Number:Power             | PV Power                              | no        | MPPT Information    |
-| fi-mppt1-voltage                   | Number:ElectricPotential | MPPT1 Voltage                         | yes       | MPPT Information    |
-| fi-mppt1-current                   | Number:ElectricCurrent   | MPPT1 Current                         | yes       | MPPT Information    |
-| fi-mppt1-power                     | Number:Power             | MPPT1 Power                           | no        | MPPT Information    |
-| fi-mppt2-voltage                   | Number:ElectricPotential | MPPT2 Voltage                         | yes       | MPPT Information    |
-| fi-mppt2-current                   | Number:ElectricCurrent   | MPPT2 Current                         | yes       | MPPT Information    |
-| fi-mppt2-power                     | Number:Power             | MPPT2 Power                           | no        | MPPT Information    |
-| fi-mppt3-voltage                   | Number:ElectricPotential | MPPT3 Voltage                         | yes       | MPPT Information    |
-| fi-mppt3-current                   | Number:ElectricCurrent   | MPPT3 Current                         | yes       | MPPT Information    |
-| fi-mppt3-power                     | Number:Power             | MPPT3 Power                           | no        | MPPT Information    |
-| fi-mppt4-voltage                   | Number:ElectricPotential | MPPT4 Voltage                         | yes       | MPPT Information    |
-| fi-mppt4-current                   | Number:ElectricCurrent   | MPPT4 Current                         | yes       | MPPT Information    |
-| fi-mppt4-power                     | Number:Power             | MPPT4 Power                           | no        | MPPT Information    |
-| fi-battery-voltage                 | Number:ElectricPotential | Battery Voltage                       | yes       | Battery Information |
-| fi-battery-current                 | Number:ElectricCurrent   | Battery Current                       | yes       | Battery Information |
-| fi-battery-level                   | Number:Dimensionless     | Battery Level                         | no        | Battery Information |
-| fi-battery-charging-power          | Number:Power             | Battery Charging Power                | no        | Battery Information |
-| fi-battery-temperature             | Number:Temperature       | Battery Temperature                   | no        | Battery Information |
-| fi-battery-minimum-soc             | Number:Dimensionless     | Battery Min Charging Level            | yes       | Battery Information |
-| fi-battery-maximum-soc             | Number:Dimensionless     | Battery Max Charging Level            | yes       | Battery Information |
-| fi-battery-minimum-soc-on-grid     | Number:Dimensionless     | Battery Min Charging Level on Grid    | yes       | Battery Information |
-| fi-phase-a-voltage                 | Number:ElectricPotential | Phase A Voltage                       | yes       | Grid Information    |
-| fi-phase-b-voltage                 | Number:ElectricPotential | Phase B Voltage                       | yes       | Grid Information    |
-| fi-phase-c-voltage                 | Number:ElectricPotential | Phase C Voltage                       | yes       | Grid Information    |
-| fi-grid-frequency                  | Number:Frequency         | Grid Frequency                        | yes       | Grid Information    |
-| fi-grid-export-power               | Number:Power             | Overall Power Export to Grid          | no        | Grid Information    |
-| fi-status-on-grid                  | Contact                  | Power Grid Available                  | yes       | Grid Information    |
-| fi-eps-output                      | Switch                   | Enable EPS Output                     | no        | EPS                 |
-| fi-eps-export-power                | Number:Power             | EPS Output Power                      | no        | EPS                 |
+| di-inverter-power                  | Number:Power             | Inverter Active Power                 | no        | Overview            |
+| di-home-import-power               | Number:Power             | Power flow with home network          | no        | Overview            |
+| di-daily-pv-generation             | Number:Energy            | Daily PV Generation                   | no        | Overview            |
+| di-total-pv-generation             | Number:Energy            | Total PV Generation                   | no        | Overview            |
+| di-internal-temperature            | Number:Temperature       | Internal Temperature                  | yes       | Overview            |
+| di-meter-connected                 | Contact                  | Smart Meter is Connected              | yes       | Overview            |
+| di-status-alarm                    | Contact                  | System Warning                        | no        | Overview            |
+| di-status-operation                | Contact                  | System in Operational Mode            | no        | Overview            |
+| di-status-standby                  | Contact                  | System in Standby Mode (not yet off)  | yes       | Overview            |
+| di-pv-power                        | Number:Power             | PV Power                              | no        | MPPT Information    |
+| di-mppt1-voltage                   | Number:ElectricPotential | MPPT1 Voltage                         | yes       | MPPT Information    |
+| di-mppt1-current                   | Number:ElectricCurrent   | MPPT1 Current                         | yes       | MPPT Information    |
+| di-mppt1-power                     | Number:Power             | MPPT1 Power                           | no        | MPPT Information    |
+| di-mppt2-voltage                   | Number:ElectricPotential | MPPT2 Voltage                         | yes       | MPPT Information    |
+| di-mppt2-current                   | Number:ElectricCurrent   | MPPT2 Current                         | yes       | MPPT Information    |
+| di-mppt2-power                     | Number:Power             | MPPT2 Power                           | no        | MPPT Information    |
+| di-mppt3-voltage                   | Number:ElectricPotential | MPPT3 Voltage                         | yes       | MPPT Information    |
+| di-mppt3-current                   | Number:ElectricCurrent   | MPPT3 Current                         | yes       | MPPT Information    |
+| di-mppt3-power                     | Number:Power             | MPPT3 Power                           | no        | MPPT Information    |
+| di-mppt4-voltage                   | Number:ElectricPotential | MPPT4 Voltage                         | yes       | MPPT Information    |
+| di-mppt4-current                   | Number:ElectricCurrent   | MPPT4 Current                         | yes       | MPPT Information    |
+| di-mppt4-power                     | Number:Power             | MPPT4 Power                           | no        | MPPT Information    |
+| di-battery-voltage                 | Number:ElectricPotential | Battery Voltage                       | yes       | Battery Information |
+| di-battery-current                 | Number:ElectricCurrent   | Battery Current                       | yes       | Battery Information |
+| di-battery-level                   | Number:Dimensionless     | Battery Level                         | no        | Battery Information |
+| di-battery-charging-power          | Number:Power             | Battery Charging Power                | no        | Battery Information |
+| di-battery-temperature             | Number:Temperature       | Battery Temperature                   | no        | Battery Information |
+| di-battery-minimum-soc             | Number:Dimensionless     | Battery Min Charging Level            | yes       | Battery Information |
+| di-battery-maximum-soc             | Number:Dimensionless     | Battery Max Charging Level            | yes       | Battery Information |
+| di-battery-minimum-soc-on-grid     | Number:Dimensionless     | Battery Min Charging Level on Grid    | yes       | Battery Information |
+| di-phase-l1-voltage                | Number:ElectricPotential | Phase A Voltage                       | yes       | Grid Information    |
+| di-phase-l2-voltage                | Number:ElectricPotential | Phase B Voltage                       | yes       | Grid Information    |
+| di-phase-l3-voltage                | Number:ElectricPotential | Phase C Voltage                       | yes       | Grid Information    |
+| di-grid-frequency                  | Number:Frequency         | Grid Frequency                        | yes       | Grid Information    |
+| di-grid-export-power               | Number:Power             | Overall Power Export to Grid          | no        | Grid Information    |
+| di-status-on-grid                  | Contact                  | Power Grid Available                  | yes       | Grid Information    |
+| di-eps-output                      | Switch                   | Enable EPS Output                     | no        | EPS                 |
+| di-eps-export-power                | Number:Power             | EPS Output Power                      | no        | EPS                 |
 
 ## Full Example
 
